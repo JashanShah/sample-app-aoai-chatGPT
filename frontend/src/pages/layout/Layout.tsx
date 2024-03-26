@@ -70,58 +70,6 @@ const Layout = () => {
 
     const handleDownloadClick = async () => {
         try {
-            // Retrieve the conversationId from the application state
-            //const conversationId = state?.conversationId;
-    
-            // if (!conversationId) {
-            //     console.error("Conversation ID not found.");
-            //     return;
-            // }
-    
-            // Fetch the last message content
-            //const lastMessageContent = await fetchLastMessageContent(conversationId);
-            //const lastMessageContent = Conversation.messages[Conversation.messages.length - 1];
-            
-            // if (!state || !state.currentChat) {
-            //     return <div>There is no current chat.</div>;
-            //   }
-            
-            //   const { messages } = state.currentChat;
-            
-            //   if (!messages || messages.length === 0) {
-            //     return <div>There are no messages in the current chat.</div>;
-            //   }
-            
-            //   const lastMessage = messages[messages.length - 1];
-            // const lastMessageContent = lastMessage ? lastMessage.content : 'There is no last message found';
-            // if (!lastMessageContent) {
-            //     console.error("Last message content not found.");
-            //     return;
-            // }
-    
-            // // Create a Blob object containing the last message content
-            // const blob = new Blob([lastMessageContent], { type: 'text/plain' });
-    
-            // // Create a URL for the Blob object
-            // const url = URL.createObjectURL(blob);
-    
-            // // Create a temporary anchor element
-            // const a = document.createElement('a');
-            // a.href = url;
-            // a.download = 'last_message.txt'; // Set the filename for the downloaded file
-    
-            // // Append the anchor element to the document body
-            // document.body.appendChild(a);
-    
-            // // Trigger a click event on the anchor element to start the download
-            // a.click();
-    
-            // // Remove the anchor element from the document body
-            // document.body.removeChild(a);
-    
-            // // Revoke the URL to release the resources
-            // URL.revokeObjectURL(url);
-
             if (!state || !state.currentChat) {
                 console.error("There is no current chat.");
                 return;
@@ -145,47 +93,145 @@ const Layout = () => {
             // Create a Blob object containing the last message content
             // type: 'application/octet-stream'
             //const blob = new Blob([lastMessageContent], { type: 'application/msword' });
-            Packer.toBlob(lastMessageContent).then(blob => 
-            {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'Job Description.docx';
+            
+        //     Packer.toBlob(lastMessageContent).then(blob => 
+        //     {
+        //         const url = URL.createObjectURL(blob);
+        //         const a = document.createElement('a');
+        //         a.href = url;
+        //         a.download = 'Job Description.docx';
          
-                document.body.appendChild(a);
-                a.click();
-                URL.revokeObjectURL(url);
-           });
+        //         document.body.appendChild(a);
+        //         a.click();
+        //         URL.revokeObjectURL(url);
+        //    });
          
-         
-            // const blob = new Blob([lastMessageContent], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
 
-            // // Create a URL for the Blob object
-            // const url = URL.createObjectURL(blob);
+
+            let formattedText = lastMessageContent;
+
+
+        // lastMessageContent will be the original text.
+        // Create an arrayList for each section. Each section will have a change in the font size.
+        // variable to use for the substring; we will call it currentText
+        /*
+        String currentText = "";
+        String mainTitle = "";
+        if(lastMessageContent.includes("#"))
+        {
+            // Will include the first # till the next subheader.
+            currentText = formattedText.substring(0,formattedText.indexOf("##")) //This will get us to the next section. Might need to revisit
+            if(currentText.includes("##"))
+            {
+                mainTitle = substring(currentText.indexOf("#"))
+                formattedText = `<div style="text-align: center; font-weight: bold; font-size: 24px;">${formattedText}</div>`;
+            }
+        }
+        
+        // We can 
+
+        */
+
+        // We will need a loop
+        // first we can do this for the Main title:
+
+            // For the main title:
+            // if (formattedText.includes('#')) {
+            //     // If the sentence contains one "#" sign, align center, bold, and font size 32
+            //     formattedText = `<div style="text-align: center; font-weight: bold; font-size: 32px;">${formattedText}</div>`;
+            // }
+
+        //We can assume that there will be no more ## since the big title is done.
+        // For the next #
+
+        formatContent(formattedText)
+
+
+
+            // For the Subheader
+            // if (formattedText.includes('##')) {
+            //     // If the sentence contains two "##" signs, align left, bold, and font size 24
+            //     formattedText = `<div style="text-align: left; font-weight: bold; font-size: 24px;">${formattedText}</div>`;
+            // }
+        
+            const cleanText = formattedText.replace(/#/g, '').replace(/\[doc1\]/g,'');
+
+            const htmlText = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <title>Job Description</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                    </style>
+                </head>
+                <body>
+                    ${cleanText}
+                </body>
+                </html>
+            `;
+
+
+
+            //const boldText = '<b>'+cleanText+'</b>'
+        
+            const blob = new Blob([htmlText], {type: 'application/msword' });
+
+            // Create a URL for the Blob object
+            const url = URL.createObjectURL(blob);
     
-            // // Create a temporary anchor element
-            // const a = document.createElement('a');
-            // a.href = url;
-            // // docx
-            // //a.download = 'Job Description.doc'; // Set the filename for the downloaded file
+            // Create a temporary anchor element
+            const a = document.createElement('a');
+            a.href = url;
+            // docx
+            a.download = 'Job Description.doc'; // Set the filename for the downloaded file
             // a.download = 'Job Description.docx';
             // Append the anchor element to the document body
-            // document.body.appendChild(a);
+            document.body.appendChild(a);
     
             // Trigger a click event on the anchor element to start the download
-            // a.click();
+            a.click();
     
             // Remove the anchor element from the document body
-            // document.body.removeChild(a);
+            document.body.removeChild(a);
     
             // Revoke the URL to release the resources
-            // URL.revokeObjectURL(url);
+            URL.revokeObjectURL(url);
         } catch (error) {
             console.error('Error downloading file:', error);
         }
     };
     
 
+    function formatContent(content: string): string {
+        let sections: string[] = [];
+        
+        // Split the content by ## to separate sections
+        const sectionContents = content.split('\n## ');
+        
+        // Process each section
+        sectionContents.forEach((sectionContent, index) => {
+            // Split each section into lines
+            const lines = sectionContent.split('\n').filter(line => line.trim() !== '');
+    
+            // Process the first line separately (usually the header)
+            if (index === 0) {
+                sections.push(`<div style="font-size: 32px">${lines[0]}</div>`);
+            } else {
+                sections.push(`<div style="font-size: 24px">${lines[0]}</div>`);
+            }
+    
+            // Process the remaining lines with smaller font size
+            for (let i = 1; i < lines.length; i++) {
+                sections.push(`<div style="font-size: 16px">${lines[i]}</div>`);
+            }
+        });
+    
+        // Combine sections into final formatted content
+        return sections.join('');
+    }
+    
     
     
 
