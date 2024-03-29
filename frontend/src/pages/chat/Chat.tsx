@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useContext, useLayoutEffect } from "react";
+import { useRef, useState, useEffect, useContext, useLayoutEffect, useCallback } from "react";
 import { CommandBarButton, IconButton, Dialog, DialogType, Stack } from "@fluentui/react";
 import { SquareRegular, ShieldLockRegular, ErrorCircleRegular } from "@fluentui/react-icons";
 
@@ -73,6 +73,16 @@ const Chat = () => {
     }
 
     const [ASSISTANT, TOOL, ERROR] = ["assistant", "tool", "error"]
+
+    const generateJobDescription = useCallback((role: string) => {
+        // Simulate an API call with a timeout
+        console.log(`Generating job description for ${role}...`);
+        setTimeout(() => {
+            const exampleDescription = `An experienced ${role} is required to join our team to develop and maintain our software systems. The ideal candidate will have a strong understanding of software development life cycles, a passion for technology, and excellent problem-solving skills.`;
+            alert(exampleDescription);
+        }, 1000); // Simulated delay of 1 second
+    }, []);
+
 
     useEffect(() => {
         if (appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.Working  
@@ -624,6 +634,7 @@ const Chat = () => {
 
     return (
         <div className={styles.container} role="main">
+
             {showAuthMessage ? (
                 <Stack className={styles.chatEmptyState}>
                     <ShieldLockRegular className={styles.chatIcon} style={{ color: 'darkorange', height: "200px", width: "200px" }} />
@@ -647,6 +658,25 @@ const Chat = () => {
                                 />
                                 <h1 className={styles.chatEmptyStateTitle}>{ui?.chat_title}</h1>
                                 <h2 className={styles.chatEmptyStateSubtitle}>{ui?.chat_description}</h2>
+
+                                    <div style={{ marginBottom: '20px' }}> {/* Adding margin bottom for spacing */}
+                                        <button 
+                                            className = "rounded-button"
+                                            onClick={() => generateJobDescription("Software Engineer")}
+                                            style={{ marginRight: '30px', fontSize: '16px', padding: '10px 20px' }} // Adjusting size and spacing
+                                        >
+                                            Example: Write me a job description for a Software Engineer
+                                        </button>
+                                        <button
+                                            className = "rounded-button"
+                                            onClick={() => generateJobDescription("IT Analyst")}
+                                            style={{ fontSize: '16px', padding: '10px 20px' }} // Adjusting size
+                                        >
+                                            Example: Write me a job description for an IT Analyst
+                                        </button>
+                                    </div>
+
+
                             </Stack>
                         ) : (
                             <div className={styles.chatMessageStream} style={{ marginBottom: isLoading ? "40px" : "0px" }} role="log">

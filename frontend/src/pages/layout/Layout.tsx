@@ -107,8 +107,52 @@ const Layout = () => {
         //    });
          
 
+            const sections = lastMessageContent.split(/(?=#|\#\#|\n)/);        // Split content into sections based on "#" and "##"
+            //const sections = lastMessageContent.split(/\n(?=#|\#\#)/); // Split content into sections based on "#" and "##"
 
-            let formattedText = lastMessageContent;
+            console.error(sections);
+            let formattedText = '';
+
+
+
+
+
+            sections.forEach((section) => {
+                let formattedSection = section.trim(); // Remove leading and trailing whitespaces
+        
+                if (formattedSection.startsWith('# Job Description')) {
+                    // Section is a main title
+                    const title = formattedSection.substring(1).trim();
+                    formattedSection = `<p style="font-size: 32px; text-align: center;"><b>${title}</b></p>`;
+                    console.error(formattedSection);
+                } else if (formattedSection.startsWith('#') && !formattedSection.startsWith('# Job Description')) {
+                    // Section is a subtitle
+                    const subtitle = formattedSection.substring(2).trim();
+                    formattedSection = `<p style="font-size: 24px; text-align: left;"><b>${subtitle}</b></p>`;
+                    console.error(formattedSection);
+                } else {
+                    // Section is body text
+                    // loop
+                    formattedSection = formattedSection.replace(/^\s*-\s*/gm, '<br>-').replace(/\n+/g, ''); // Replace "- " or " - " with "<br>-" and remove extra newlines
+                    
+                    console.error(formattedSection);
+                    // let dashText = '';
+                    // if(formattedSection.startsWith('- '))
+                    // {
+                    //     dashText += formattedSection;
+                    // }
+
+                    //formattedSection = `<p style="font-size: 12px; text-align: left;">${formattedSection}</p>`;
+                    //formattedSection = formattedSection.replace(/(<br>|\n)/g, '<br style="line-height: 0.1;">'); // Reduce vertical space to 0.1 for empty lines
+                    formattedSection = `<p style="font-size: 12px; text-align: left; margin: 0 !important; padding: 0 !important;">${formattedSection}</p>`;
+
+                }
+                formattedSection = formattedSection.replace(/\[doc\d+\]/g, '');
+                formattedText += formattedSection + '\n';
+            });
+        
+    
+            //let formattedText = lastMessageContent;
 
 
         // lastMessageContent will be the original text.
@@ -144,7 +188,7 @@ const Layout = () => {
         //We can assume that there will be no more ## since the big title is done.
         // For the next #
 
-        formatContent(formattedText)
+        //formatContent(formattedText)
 
 
 
@@ -153,9 +197,12 @@ const Layout = () => {
             //     // If the sentence contains two "##" signs, align left, bold, and font size 24
             //     formattedText = `<div style="text-align: left; font-weight: bold; font-size: 24px;">${formattedText}</div>`;
             // }
-        
-            const cleanText = formattedText.replace(/#/g, '').replace(/\[doc1\]/g,'');
+            //const cleanText = formattedText.replace(/#/g, '').replace('[doc1]', "").replace('[doc2]', "").replace('[doc3]', "").replace('[doc4]', "").replace('[doc5]', "");
+            const cleanText = formattedText.replace(/#/g, '')
+            //const cleanText = formattedText.replace(/#/g, '').replace(/\s*\[doc\d+\]\.$/, ''); // Remove '#' in the beginning and " [docX]." at the end of a sentence
 
+
+            
             const htmlText = `
                 <!DOCTYPE html>
                 <html>
@@ -171,7 +218,7 @@ const Layout = () => {
                 </body>
                 </html>
             `;
-
+            
 
 
             //const boldText = '<b>'+cleanText+'</b>'
@@ -332,3 +379,4 @@ const Layout = () => {
 };
 
 export default Layout;
+  

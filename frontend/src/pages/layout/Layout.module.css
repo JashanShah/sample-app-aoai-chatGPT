@@ -2,10 +2,11 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    background-color: #ffffff;
 }
 
 .header {
-    background-color: #f2f2f2;
+    background-color: #ffffff;
 }
 
 .headerContainer {
@@ -28,7 +29,7 @@
     line-height: 28px;
     display: flex;
     align-items: flex-end;
-    color: #242424;
+    color: #D8B243;
 }
 
 .headerIcon {
@@ -41,7 +42,19 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    margin-right: 20px;
+    align-items: center;
+    padding: 5px 12px;
+    gap: 4px;
+    width: 86px;
+    height: 32px;
+    background: radial-gradient(109.81% 107.82% at 100.1% 90.19%, #D8B243 20%, #FFD97F 50%, #B58D1E 80%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+    border-radius: 4px;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    position: absolute;
+    right: 20px;
+    cursor: pointer;
 }
 
 .shareButton {
