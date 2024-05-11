@@ -1,7 +1,7 @@
-import { useRef, useState, useEffect, useContext, useLayoutEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect, useContext, useLayoutEffect, useCallback } from "react";
 import { CommandBarButton, IconButton, Dialog, DialogType, Stack } from "@fluentui/react";
 import { SquareRegular, ShieldLockRegular, ErrorCircleRegular } from "@fluentui/react-icons";
-
+import Download from "../../assets/Download.svg";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from "rehype-raw";
@@ -12,6 +12,7 @@ import DOMPurify from 'dompurify';
 import styles from "./Chat.module.css";
 import Contoso from "../../assets/Contoso.svg";
 import { XSSAllowTags } from "../../constants/xssAllowTags";
+
 
 import {
     ChatMessage,
@@ -35,6 +36,10 @@ import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel"
 import { AppStateContext } from "../../state/AppProvider";
 import { useBoolean } from "@fluentui/react-hooks";
 
+interface Props {
+    setQuestion: (question: string) => void;
+}
+
 const enum messageStatus {
     NotRunning = "Not Running",
     Processing = "Processing",
@@ -57,7 +62,9 @@ const Chat = () => {
     const [clearingChat, setClearingChat] = useState<boolean>(false);
     const [hideErrorDialog, { toggle: toggleErrorDialog }] = useBoolean(true);
     const [errorMsg, setErrorMsg] = useState<ErrorMessage | null>()
-
+    const [question, setQuestion] = useState<string>("");
+    const contextValue = useContext(AppStateContext);
+    const state = contextValue?.state;
     const errorDialogContentProps = {
         type: DialogType.close,
         title: errorMsg?.title,
@@ -74,15 +81,35 @@ const Chat = () => {
 
     const [ASSISTANT, TOOL, ERROR] = ["assistant", "tool", "error"]
 
-    const generateJobDescription = useCallback((role: string) => {
-        // Simulate an API call with a timeout
-        console.log(`Generating job description for ${role}...`);
-        setTimeout(() => {
-            const exampleDescription = `An experienced ${role} is required to join our team to develop and maintain our software systems. The ideal candidate will have a strong understanding of software development life cycles, a passion for technology, and excellent problem-solving skills.`;
-            alert(exampleDescription);
-        }, 1000); // Simulated delay of 1 second
-    }, []);
+    //const [question, setQuestion] = useState('');
+    //const [exampleDescription, setExampleDescription] = useState("Write me a job description for a");
+    const handleSendQuestion = (question: string) => {
+        // Your logic for sending the question
+    };
+    const updateQuestion = (newQuestion: string) => {
+        setQuestion(newQuestion);
+    };
+    
+    const handleButtonClick = () => {
+        setQuestion("Write me a job descripton for a");
+    };
 
+    // const generateJobDescription = useCallback(() => {
+    //     console.log(`Generating job description for a`);
+    //     setTimeout(() => {
+    //         //console.log("Example description before setting:", exampleDescription);
+    //         //const exampleDescription = `Write me a job description for a`;
+    //         //console.log("New example description:", newExampleDescription);
+    //         setExampleDescription(exampleDescription);
+    //     }, 1000); // Simulated delay of 1 second
+    // }, []);
+
+
+    // const generateJobDescription = useCallback(() => {
+    //     console.log(`Generating job description for`);
+    //     //const exampleDescription = `Write me a job description for a ${role}`;
+    //     setExampleDescription(exampleDescription); // Update exampleDescription state directly
+    // }, []);
 
     useEffect(() => {
         if (appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.Working  
@@ -155,6 +182,188 @@ const Chat = () => {
                 setMessages([...messages, toolMessage, assistantMessage]);
         }
     }
+
+    const handleDownloadClick = async () => {
+        try {
+            if (!state || !state.currentChat) {
+                console.error("There is no current chat.");
+                return;
+            }
+            
+            const { messages } = state.currentChat;
+            
+            if (!messages || messages.length === 0) {
+                console.error("There are no messages in the current chat.");
+                return;
+            }
+            
+            const lastMessage = messages[messages.length - 1];
+            let lastMessageContent = lastMessage ? lastMessage.content : 'There is no last message found';
+            
+            if (!lastMessageContent) {
+                console.error("Last message content not found.");
+                return;
+            }
+    
+            // Create a Blob object containing the last message content
+            // type: 'application/octet-stream'
+            //const blob = new Blob([lastMessageContent], { type: 'application/msword' });
+            
+        //     Packer.toBlob(lastMessageContent).then(blob => 
+        //     {
+        //         const url = URL.createObjectURL(blob);
+        //         const a = document.createElement('a');
+        //         a.href = url;
+        //         a.download = 'Job Description.docx';
+         
+        //         document.body.appendChild(a);
+        //         a.click();
+        //         URL.revokeObjectURL(url);
+        //    });
+         
+
+            const sections = lastMessageContent.split(/(?=#|\#\#|\n)/);        // Split content into sections based on "#" and "##"
+            //const sections = lastMessageContent.split(/\n(?=#|\#\#)/); // Split content into sections based on "#" and "##"
+
+            console.error(sections);
+            let formattedText = '';
+
+
+
+
+
+            sections.forEach((section) => {
+                let formattedSection = section.trim(); // Remove leading and trailing whitespaces
+        
+                if (formattedSection.startsWith('# Job Description')) {
+                    // Section is a main title
+                    const title = formattedSection.substring(1).trim();
+                    formattedSection = `<p style="font-size: 32px; text-align: center;"><b>${title}</b></p>`;
+                    console.error(formattedSection);
+                } else if (formattedSection.startsWith('#') && !formattedSection.startsWith('# Job Description')) {
+                    // Section is a subtitle
+                    const subtitle = formattedSection.substring(2).trim();
+                    formattedSection = `<p style="font-size: 24px; text-align: left;"><b>${subtitle}</b></p>`;
+                    console.error(formattedSection);
+                } else {
+                    // Section is body text
+                    // loop
+                    formattedSection = formattedSection.replace(/^\s*-\s*/gm, '<br>-').replace(/\n+/g, ''); // Replace "- " or " - " with "<br>-" and remove extra newlines
+                    
+                    console.error(formattedSection);
+                    // let dashText = '';
+                    // if(formattedSection.startsWith('- '))
+                    // {
+                    //     dashText += formattedSection;
+                    // }
+
+                    //formattedSection = `<p style="font-size: 12px; text-align: left;">${formattedSection}</p>`;
+                    //formattedSection = formattedSection.replace(/(<br>|\n)/g, '<br style="line-height: 0.1;">'); // Reduce vertical space to 0.1 for empty lines
+                    formattedSection = `<p style="font-size: 12px; text-align: left; margin: 0 !important; padding: 0 !important;">${formattedSection}</p>`;
+
+                }
+                formattedSection = formattedSection.replace(/\[doc\d+\]/g, '');
+                formattedText += formattedSection + '\n';
+            });
+        
+    
+            //let formattedText = lastMessageContent;
+
+
+        // lastMessageContent will be the original text.
+        // Create an arrayList for each section. Each section will have a change in the font size.
+        // variable to use for the substring; we will call it currentText
+        /*
+        String currentText = "";
+        String mainTitle = "";
+        if(lastMessageContent.includes("#"))
+        {
+            // Will include the first # till the next subheader.
+            currentText = formattedText.substring(0,formattedText.indexOf("##")) //This will get us to the next section. Might need to revisit
+            if(currentText.includes("##"))
+            {
+                mainTitle = substring(currentText.indexOf("#"))
+                formattedText = `<div style="text-align: center; font-weight: bold; font-size: 24px;">${formattedText}</div>`;
+            }
+        }
+        
+        // We can 
+
+        */
+
+        // We will need a loop
+        // first we can do this for the Main title:
+
+            // For the main title:
+            // if (formattedText.includes('#')) {
+            //     // If the sentence contains one "#" sign, align center, bold, and font size 32
+            //     formattedText = `<div style="text-align: center; font-weight: bold; font-size: 32px;">${formattedText}</div>`;
+            // }
+
+        //We can assume that there will be no more ## since the big title is done.
+        // For the next #
+
+        //formatContent(formattedText)
+
+
+
+            // For the Subheader
+            // if (formattedText.includes('##')) {
+            //     // If the sentence contains two "##" signs, align left, bold, and font size 24
+            //     formattedText = `<div style="text-align: left; font-weight: bold; font-size: 24px;">${formattedText}</div>`;
+            // }
+            //const cleanText = formattedText.replace(/#/g, '').replace('[doc1]', "").replace('[doc2]', "").replace('[doc3]', "").replace('[doc4]', "").replace('[doc5]', "");
+            const cleanText = formattedText.replace(/#/g, '')
+            //const cleanText = formattedText.replace(/#/g, '').replace(/\s*\[doc\d+\]\.$/, ''); // Remove '#' in the beginning and " [docX]." at the end of a sentence
+
+
+            
+            const htmlText = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <title>Job Description</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                    </style>
+                </head>
+                <body>
+                    ${cleanText}
+                </body>
+                </html>
+            `;
+            
+
+
+            //const boldText = '<b>'+cleanText+'</b>'
+        
+            const blob = new Blob([htmlText], {type: 'application/msword' });
+
+            // Create a URL for the Blob object
+            const url = URL.createObjectURL(blob);
+    
+            // Create a temporary anchor element
+            const a = document.createElement('a');
+            a.href = url;
+            // docx
+            a.download = 'Job Description.doc'; // Set the filename for the downloaded file
+            // a.download = 'Job Description.docx';
+            // Append the anchor element to the document body
+            document.body.appendChild(a);
+    
+            // Trigger a click event on the anchor element to start the download
+            a.click();
+    
+            // Remove the anchor element from the document body
+            document.body.removeChild(a);
+    
+            // Revoke the URL to release the resources
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading file:', error);
+        }
+    };
 
     const makeApiRequestWithoutCosmosDB = async (question: string, conversationId?: string) => {
         setIsLoading(true);
@@ -659,22 +868,18 @@ const Chat = () => {
                                 <h1 className={styles.chatEmptyStateTitle}>{ui?.chat_title}</h1>
                                 <h2 className={styles.chatEmptyStateSubtitle}>{ui?.chat_description}</h2>
 
-                                    <div style={{ marginBottom: '20px' }}> {/* Adding margin bottom for spacing */}
-                                        <button 
-                                            className = "rounded-button"
-                                            onClick={() => generateJobDescription("Software Engineer")}
-                                            style={{ marginRight: '30px', fontSize: '16px', padding: '10px 20px' }} // Adjusting size and spacing
-                                        >
-                                            Example: Write me a job description for a Software Engineer
-                                        </button>
-                                        <button
-                                            className = "rounded-button"
-                                            onClick={() => generateJobDescription("IT Analyst")}
-                                            style={{ fontSize: '16px', padding: '10px 20px' }} // Adjusting size
-                                        >
-                                            Example: Write me a job description for an IT Analyst
-                                        </button>
-                                    </div>
+                                    {/* <div>
+                                        <div style={{ marginBottom: '20px' }}>
+                                            <button
+                                                className={styles["rounded-button"]}
+                                                onClick={handleButtonClick} 
+                                                //onClick={props.updateQuestion(newQuestion)}
+                                                style={{ marginRight: '30px', fontSize: '20px', padding: '10px 20px' }}
+                                            >
+                                                Prompt example: Write me a job description for a Software Engineer
+                                            </button>
+                                        </div>
+                                    </div> */}
 
 
                             </Stack>
@@ -774,7 +979,7 @@ const Chat = () => {
                                         },
                                         root: {
                                             color: '#FFFFFF',
-                                            background: "radial-gradient(109.81% 107.82% at 100.1% 90.19%, #0F6CBD 33.63%, #2D87C3 70.31%, #8DDDD8 100%)",
+                                            background: "linear-gradient(135deg, #975353 0%, #910101 51.04%, #430801 100%)",
                                         },
                                         rootDisabled: {
                                             background: "#F0F0F0"
@@ -796,13 +1001,29 @@ const Chat = () => {
                             </Stack>
                             <QuestionInput
                                 clearOnSend
-                                placeholder="Type a new question..."
+                                placeholder="Give me a job description for a..."
                                 disabled={isLoading}
                                 onSend={(question, id) => {
                                     appStateContext?.state.isCosmosDBAvailable?.cosmosDB ? makeApiRequestWithCosmosDB(question, id) : makeApiRequestWithoutCosmosDB(question, id)
                                 }}
                                 conversationId={appStateContext?.state.currentChat?.id ? appStateContext?.state.currentChat?.id : undefined}
+                                //setQuestion = {setQuestion}
+                                updateQuestion={updateQuestion}
                             />
+                            
+                                <img
+                                    src={Download}
+                                    alt="Download"
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: '50px', 
+                                        right: '20px', 
+                                        cursor: 'pointer', 
+                                        width: '32px', 
+                                        height: '32px', 
+                                    }}
+                                    onClick={handleDownloadClick} 
+                                />
                         </Stack>
                     </div>
                     {/* Citation Panel */}

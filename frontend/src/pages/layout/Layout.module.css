@@ -29,7 +29,7 @@
     line-height: 28px;
     display: flex;
     align-items: flex-end;
-    color: #D8B243;
+    color: #800000;
 }
 
 .headerIcon {
@@ -47,7 +47,7 @@
     gap: 4px;
     width: 86px;
     height: 32px;
-    background: radial-gradient(109.81% 107.82% at 100.1% 90.19%, #D8B243 20%, #FFD97F 50%, #B58D1E 80%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+    background: #800000 !important; /* Updated background color */
     border-radius: 4px;
     flex: none;
     order: 1;

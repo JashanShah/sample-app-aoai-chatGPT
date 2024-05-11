@@ -33,6 +33,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 0;
 }
 
 .chatEmptyStateTitle {
@@ -48,7 +49,6 @@
 }
 
 
-
 .chatEmptyStateSubtitle {
     margin-top: 20px;
     font-style: normal;
@@ -62,34 +62,33 @@
 }
 
 .rounded-button {
-    padding: 10px 20px; /* Adjust padding to suit your design */
-    border: 1px solid #0078d4; /* Example border color */
-    background-color: #0078d4; /* Example background color */
-    color: white; /* Text color */
-    font-size: 16px; /* Example font size */
-    border-radius: 8px; /* Adjust this value to increase or decrease the roundness of the corners */
+    padding: 30px 30px; /* Increase the top and bottom padding to make the button taller */
+    width: 400px; /* Increase button width */
+    height: 150px;
+    border: 2px solid lightgrey; /* Change border color to light grey */
+    background-color: white; /* Change background color to white */
+    color: black; /* Text color */
+    font-size: 20px; /* Increase font size */
+    font-weight: bold; /* Make the font bold */
+    border-radius: 20px; /* Adjust this value to increase or decrease the roundness of the corners */
     cursor: pointer;
     outline: none;
     transition: background-color 0.3s, border-color 0.3s;
-  
+    margin-top: 20px; /* Added margin on the top */
     /* Optional: Add a slight shadow for some depth */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+}
   
-  .rounded-button:hover {
-    background-color: #005a9e; /* Darker shade for hover state */
-    border-color: #005a9e;
-  }
+.rounded-button:active {
+    background-color: #380202; /* Even darker for active state */
+    color: white; /* Change font color to white */
+    border: none; /* Remove border */
+}
   
-  .rounded-button:active {
-    background-color: #004578; /* Even darker for active state */
-    border-color: #004578;
-  }
-  
-  /* If you are using a:focus for accessibility, you might want to add: */
-  .rounded-button:focus {
+/* If you are using a:focus for accessibility, you might want to add: */
+.rounded-button:focus {
     box-shadow: 0 0 0 2px #fff, 0 0 0 4px #005a9e; /* A focus ring around the button */
-  }
+}
   
 
 .chatIcon {
@@ -107,7 +106,7 @@
     padding-right: 24px;
     display: flex;
     flex-direction: column;
-    margin-top: 24px;
+    margin-top: 8px;
 }
 
 .chatMessageUser {
@@ -119,7 +118,7 @@
 .chatMessageUserMessage {
     display: flex;
     padding: 20px;
-    background: #EDF5FD;
+    background: #fff7f7;
     border-radius: 8px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.14), 0px 0px 2px rgba(0, 0, 0, 0.12);
     font-style: normal;
@@ -132,6 +131,10 @@
     white-space: pre-wrap;
     word-wrap: break-word;
     max-width: 80%;
+    background-image: linear-gradient(to right, #FFC0CB, #800000);
+    background-position: bottom;
+    background-size: 100% 2px;
+    background-repeat: no-repeat;
 }
 
 .chatMessageGpt {
@@ -143,13 +146,18 @@
 .chatMessageError {
     padding: 20px;
     border-radius: 8px;
-    box-shadow: rgba(182, 52, 67, 1) 1px 1px 2px, rgba(182, 52, 67, 1) 0px 0px 1px;
     color: #242424;
+    /* Change color to light grey */
+    box-shadow: rgba(182, 182, 182, 1) 1px 1px 2px, rgba(182, 182, 182, 1) 0px 0px 1px;
     flex: none;
     order: 0;
     flex-grow: 0;
     max-width: 800px;
     margin-bottom: 12px;
+    background-image: linear-gradient(to right, #FFC0CB, #800000);
+    background-position: bottom;
+    background-size: 100% 2px;
+    background-repeat: no-repeat;
 }
 
 .chatMessageErrorContent {
@@ -191,6 +199,11 @@
     color: #FFFFFF;
     border-radius: 4px;
     z-index: 1;
+}
+
+
+.clearChatBroomNoCosmos:hover {
+    color:#000000;
 }
 
 .clearChatBroomNoCosmos {
@@ -329,7 +342,7 @@
     line-height: 20px;
     color: #000000;
     flex: none;
-    order: 1;
+    order: none;
     align-self: stretch;
     flex-grow: 0;
 } 
